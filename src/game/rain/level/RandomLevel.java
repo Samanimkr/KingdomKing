@@ -1,22 +1,21 @@
 package game.rain.level;
 
+import game.rain.level.tile.Tile;
 import java.util.Random;
 
-public class RandomLevel extends Level {
+public final class RandomLevel extends Level {
+    private static final Random random = new Random();
+    private static final int[] PALETTE = {
+        Tile.col_spawn_grass, Tile.col_spawn_floor, Tile.col_spawn_bush
+    };
 
-	private static final Random random = new Random();
+    public RandomLevel(int width, int height) {
+        super(width, height);
+        generateLevel();
+    }
 
-	public RandomLevel(int width, int height) {
-		super(width, height);
-		//Whatever is inputed into these parameters will get sent back to Level.java
-	}
-
-	protected void generateLevel() {
-		for (int y = 0; y < height; y++) {
-			for (int x = 0; x < width; x++) {
-				tilesInt[x + y * width] = random.nextInt(4);
-			}
-		}
-	}
-	
+    @Override
+    protected void generateLevel() {
+        for (int i = 0; i < tiles.length; i++) tiles[i] = PALETTE[random.nextInt(PALETTE.length)];
+    }
 }

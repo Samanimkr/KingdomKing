@@ -45,8 +45,9 @@ public class Player extends Mob {
 		}
 		
 		if (xa != 0 || ya != 0) {
+			int oldX = x, oldY = y;
 			move(xa, ya);
-			walking = true;
+			walking = x != oldX || y != oldY;
 		} else {
 			walking = false;
 		}
@@ -67,9 +68,9 @@ public class Player extends Mob {
 		if (dir == 1) {
 			sprite = Sprite.player_side;
 			if (walking) {
-				if (anim % 21 > 7) {
+				if (anim % 21 >= 14) {
 					sprite = Sprite.player_side_1;
-				} else if (anim % 21 > 20) {
+				} else if (anim % 21 >= 7) {
 					sprite = Sprite.player_side_2;
 				} else {
 					sprite = Sprite.player_side;
@@ -89,9 +90,9 @@ public class Player extends Mob {
 		if (dir == 3) {
 			sprite = Sprite.player_side;
 			if (walking) {
-				if (anim % 21 > 7) {
+				if (anim % 21 >= 14) {
 					sprite = Sprite.player_side_1;
-				} else if (anim % 21 > 20) {
+				} else if (anim % 21 >= 7) {
 					sprite = Sprite.player_side_2;
 				} else {
 					sprite = Sprite.player_side;

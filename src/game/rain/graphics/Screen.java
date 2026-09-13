@@ -1,73 +1,46 @@
 package game.rain.graphics;
 
 import game.rain.level.tile.Tile;
-
-import java.util.Random;
+import java.util.Arrays;
 
 public class Screen {
+    public final int width, height;
+    public final int[] pixels;
+    public int xOffset, yOffset;
 
-	public int width, height;
-	public int[] pixels;
-	public final int MAP_SIZE = 64;
-	public final int MAP_SIZE_MASK = MAP_SIZE - 1;
-	public int xOffset, yOffset;
-	public int[] tiles = new int[MAP_SIZE * MAP_SIZE];
-	private Random random = new Random();
+    public Screen(int width, int height) {
+        this.width = width;
+        this.height = height;
+        pixels = new int[width * height];
+    }
 
-	public Screen(int width, int height) {
-		this.width = width; //setting game width to "Screen.java" int width
-		this.height = height;
-		pixels = new int[width * height];
+    public void clear() { Arrays.fill(pixels, 0); }
 
-		for (int i = 0; i < MAP_SIZE * MAP_SIZE; i++) {
-			tiles[i] = random.nextInt(0xffffff);
-		}
-	}
+    public void renderTile(int x, int y, Tile tile) {
+        renderSprite(x, y, tile.sprite, 0, false);
+    }
 
-	public void clear() {
-		for (int i = 0; i < pixels.length; i++) {
-			pixels[i] = 0;
-		}
-	}
+    public void renderPlayer(int x, int y, Sprite sprite, int flip) {
+        renderSprite(x, y, sprite, flip, true);
+    }
 
-	public void renderTile(int xp, int yp, Tile tile) {
-		xp -= xOffset;
-		yp -= yOffset;
-		for (int y = 0; y < tile.sprite.SIZE; y++) {
-			int ya = y + yp;
-			for (int x = 0; x < tile.sprite.SIZE; x++) {
-				int xa = x + xp;
-				if (xa < -tile.sprite.SIZE || xa >= width || ya < 0 || ya >= height) break;
-				if (xa < 0) xa = 0;
-				pixels[xa + ya * width] = tile.sprite.pixels[x + y * tile.sprite.SIZE];
-			}
-		}
-	}
+    private void renderSprite(int x, int y, Sprite sprite, int flip, boolean transparent) {
+        int xp = x - xOffset, yp = y - yOffset;
+        int size = sprite.SIZE;
+        for (int sy = Math.max(0, -yp); sy < Math.min(size, height - yp); sy++) {
+            int sourceY = (flip & 2) != 0 ? size - 1 - sy : sy;
+            for (int sx = Math.max(0, -xp); sx < Math.min(size, width - xp); sx++) {
+                int sourceX = (flip & 1) != 0 ? size - 1 - sx : sx;
+                int color = sprite.pixels[sourceX + sourceY * size];
+                if (!transparent || (color != 0xffff00ff && (color >>> 24) != 0)) {
+                    pixels[xp + sx + (yp + sy) * width] = color;
+                }
+            }
+        }
+    }
 
-	public void renderPlayer(int xp, int yp, Sprite sprite, int flip) {
-		xp -= xOffset;
-		yp -= yOffset;
-		for (int y = 0; y < 32; y++) {
-			int ya = y + yp;
-			int ys = y;
-			if (flip == 2 || flip == 3) {
-				ys = 31 - y;
-			}
-			for (int x = 0; x < 32; x++) {
-				int xa = x + xp;
-				int xs = x;
-				if (flip == 1 || flip == 4) xs = 31 - x;
-				if (xa < -32 || xa >= width || ya < 0 || ya >= height) break;
-				if (xa < 0) xa = 0;
-				int col = sprite.pixels[xs + ys * 32];
-				if (col != 0xffff00ff) pixels[xa + ya * width] = col;
-			}
-		}
-	}
-
-	public void setOffset(int xOffset, int yOffset) {
-		this.xOffset = xOffset;
-		this.yOffset = yOffset;
-	}
-
+    public void setOffset(int xOffset, int yOffset) {
+        this.xOffset = xOffset;
+        this.yOffset = yOffset;
+    }
 }

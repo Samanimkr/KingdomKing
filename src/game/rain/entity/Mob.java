@@ -22,9 +22,13 @@ public abstract class Mob extends Entity {
 		if (ya > 0) dir = 2;
 		if (ya < 0) dir = 0;
 
-		if (!collision(xa, ya)) {
-			x += xa;
-			y += ya;
+		// Check every pixel so faster movement cannot skip a solid tile.
+		int steps = Math.max(Math.abs(xa), Math.abs(ya));
+		int dx = Integer.signum(xa), dy = Integer.signum(ya);
+		for (int step = 0; step < steps; step++) {
+			if (collision(dx, dy)) break;
+			x += dx;
+			y += dy;
 		}
 	}
 
@@ -34,8 +38,8 @@ public abstract class Mob extends Entity {
 	private boolean collision(int xa, int ya) {
 		boolean solid = false;
 		for(int c = 0; c < 4; c++){
-			int xt = ((x + xa)+ c % 2 * 10 - 5) / 16; //collision box
-			int yt = ((y + ya)+ c / 2 * 12 + 3) / 16;
+			int xt = Math.floorDiv(x + xa + c % 2 * 10 - 5, 16); //collision box
+			int yt = Math.floorDiv(y + ya + c / 2 * 12 + 3, 16);
 			if (level.getTile(xt, yt).solid()) solid = true;
 		}
 		return solid;

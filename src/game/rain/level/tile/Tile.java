@@ -27,7 +27,7 @@ public class Tile {
 
 	public final static int col_spawn_grass = 0xff00ff00;
 	public final static int col_spawn_bush = 0xff00aa00; //unused
-	public final static int col_spawn_water = 0; //unused
+	public final static int col_spawn_water = 0xff0000ff;
 	public final static int col_spawn_wall = 0xff525252;
 	public final static int col_spawn_floor = 0xffff7d00;
 
