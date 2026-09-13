@@ -31,6 +31,10 @@ public class Build {
             compile(ROOT.resolve("tests"), tests, List.of("-classpath", JAR.toString()));
             runJava(List.of("-Djava.awt.headless=true", "-cp", tests + java.io.File.pathSeparator + JAR,
                     "game.rain.RegressionTests"));
+            runJava(List.of("-Djava.awt.headless=true", "-cp", tests + java.io.File.pathSeparator + JAR,
+                    "game.rain.adventure.AdventureTests"));
+            runJava(List.of("-Djava.awt.headless=true", "-cp", tests + java.io.File.pathSeparator + JAR,
+                    "game.rain.adventure.CampaignPlaythrough"));
             // A second JVM renders from the JAR alone, with no loose resource directory.
             runJava(List.of("-Djava.awt.headless=true", "-jar", JAR.toString(), "--screenshot",
                     ROOT.resolve("build/test-output/spawn.png").toString()));

@@ -13,11 +13,11 @@ else
 fi
 # Only replaces the generated app in the repository's build directory.
 rm -rf build/app/KingdomKing.app
-"$packager" --type app-image --name KingdomKing --app-version 1.0.0 \
+"$packager" --type app-image --name KingdomKing --app-version 2.0.0 \
     --input dist --main-jar KingdomKing.jar --main-class game.rain.Game \
     --dest build/app --add-modules java.desktop \
     --mac-package-identifier com.samanimkr.kingdomking \
     --mac-package-name KingdomKing --mac-app-category games \
-    --description "KingdomKing - the original Java pixel-art exploration game" \
+    --description "KingdomKing - The Stolen Crown: a pixel-art action adventure" \
     --vendor Samanimkr --copyright "Copyright (c) 2017 Samani Mukhtar"
 printf '\nReady: build/app/KingdomKing.app (includes Java for this Mac architecture).\n'

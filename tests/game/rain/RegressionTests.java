@@ -227,13 +227,13 @@ public final class RegressionTests {
         check(frames.size() == 3, "all three right-facing frames should be reachable, saw " + frames.size());
     }
 
-    private static int frameHash(Game game) {
+    private static int frameHash(ClassicGame game) {
         BufferedImage image = game.renderFrame();
         return Arrays.hashCode(image.getRGB(0, 0, image.getWidth(), image.getHeight(), null, 0, image.getWidth()));
     }
 
     private static void gameControls() {
-        Game game = new Game();
+        ClassicGame game = new ClassicGame();
         Keyboard key = (Keyboard) game.getKeyListeners()[0];
         int initial = frameHash(game);
         press(key, KeyEvent.VK_DOWN);
@@ -251,7 +251,7 @@ public final class RegressionTests {
     }
 
     private static void lifecycle() {
-        Game game = new Game();
+        ClassicGame game = new ClassicGame();
         game.stop(); // Stopping before startup must be safe.
         game.start();
         game.start();

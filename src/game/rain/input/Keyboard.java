@@ -21,6 +21,8 @@ public class Keyboard implements KeyListener, FocusListener {
         dash = keys.contains(KeyEvent.VK_SHIFT) || keys.contains(KeyEvent.VK_CONTROL);
     }
 
+    public synchronized boolean isDown(int keyCode) { return keys.contains(keyCode); }
+
     public synchronized boolean consumePress(int keyCode) {
         return presses.remove(keyCode);
     }
