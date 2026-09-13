@@ -16,7 +16,7 @@ import java.util.Map;
 /** Pixel-scaled world rendering, animation, journal and campaign UI. */
 public final class AdventureRenderer {
     public static final int WIDTH=480,HEIGHT=270;
-    private static final Color INK=new Color(0x121f29),PAPER=new Color(0xe8dfc3),GOLD=new Color(0xe7bd72),MUTED=new Color(0x9eb2ab);
+    private static final Color INK=new Color(0x0c192c),PAPER=new Color(0xfff4d6),GOLD=new Color(0xffd34e),MUTED=new Color(0xb6d6d8);
     private static final Font SMALL=new Font(Font.MONOSPACED,Font.PLAIN,8),TEXT=new Font(Font.SANS_SERIF,Font.PLAIN,9);
     private static final Font TITLE=new Font(Font.SERIF,Font.BOLD,16);
     private final BufferedImage image=new BufferedImage(WIDTH,HEIGHT,BufferedImage.TYPE_INT_RGB);
@@ -29,6 +29,8 @@ public final class AdventureRenderer {
     public BufferedImage render(Adventure adventure,boolean menu,boolean paused,boolean atlas,boolean journal,boolean muted,boolean focused) {
         a=adventure;g=image.createGraphics();g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_OFF);
         g.setRenderingHint(RenderingHints.KEY_INTERPOLATION,RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR);
+        g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,RenderingHints.VALUE_TEXT_ANTIALIAS_OFF);
+        g.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS,RenderingHints.VALUE_FRACTIONALMETRICS_OFF);
         g.setFont(SMALL);camX=(int)Math.max(0,Math.min(WorldMap.WIDTH*16-WIDTH,a.x-WIDTH/2));
         camY=(int)Math.max(0,Math.min(WorldMap.HEIGHT*16-HEIGHT,a.y-HEIGHT/2));
         if(!reducedMotion&&a.shake>0){camX+=(int)(Math.sin(a.tick*2.3)*Math.min(3,a.shake));camY+=(int)(Math.cos(a.tick*1.7)*Math.min(2,a.shake));}
@@ -39,7 +41,7 @@ public final class AdventureRenderer {
     private void drawWorld(){
         g.setColor(new Color(a.world.area.dark));g.fillRect(0,0,WIDTH,HEIGHT);
         for(int y=Math.max(0,camY/16);y<=Math.min(31,(camY+HEIGHT)/16);y++)for(int x=Math.max(0,camX/16);x<=Math.min(47,(camX+WIDTH)/16);x++)tile(x,y);
-        for(Patch p:a.patches){int x=sx(p.x),y=sy(p.y);g.setColor(new Color(p.fire?0xbb693e:0x72975c));g.fillOval(x-15,y-6,30,12);g.setColor(new Color(p.fire?0xf3c775:0xa9bb79));for(int i=0;i<4;i++)g.fillRect(x-10+i*6,y-(p.fire?(a.tick+i)%7:1),2,2);}
+        for(Patch p:a.patches){int x=sx(p.x),y=sy(p.y);g.setColor(new Color(p.fire?0xbb693e:0x6dbb48));g.fillOval(x-15,y-6,30,12);g.setColor(new Color(p.fire?0xffe171:0xa9bb79));for(int i=0;i<4;i++)g.fillRect(x-10+i*6,y-(p.fire?(a.tick+i)%7:1),2,2);}
         architecture();
         for(Portal p:a.world.portals)portal(p);
         for(Landmark l:a.world.landmarks)landmark(l);
@@ -63,7 +65,7 @@ public final class AdventureRenderer {
         if(tile==WorldMap.WALL){g.setColor(tone(a.world.area.dark,-10));g.fillRect(x,y,16,20);g.setColor(tone(base,-14));g.fillRect(x,y-6,16,17);g.setColor(tone(base,22));g.fillRect(x,y-6,16,2);g.setColor(tone(base,-30));g.drawLine(x,y+2,x+15,y+2);g.drawLine(x+((ty%2)*8),y-5,x+((ty%2)*8),y+1);return;}
         if(tile==WorldMap.WATER){
             boolean mud=a.world.area==Area.MARSH&&a.waterLevel==0&&!a.progress.has("won");
-            int water=a.progress.has("won")?0x4c9290:0x315868;g.setColor(tone(mud?0x625f47:water,h-6));g.fillRect(x,y,16,16);
+            int water=a.progress.has("won")?0x21c8c3:0x167db7;g.setColor(tone(mud?0x625f47:water,h-6));g.fillRect(x,y,16,16);
             g.setColor(tone(mud?0x756b4e:water,20));int wave=(a.tick/10+tx*3+ty)%13;
             g.fillRect(x+wave/3,y+4,5,1);g.fillRect(x+8-wave/4,y+11,6,1);return;
         }
@@ -72,10 +74,10 @@ public final class AdventureRenderer {
             if(a.solid(tx*16+8,ty*16+8)){g.setColor(new Color(0xa39879));for(int i=2;i<16;i+=4)g.fillRect(x+i,y-10,2,26);g.setColor(GOLD);g.fillRect(x,y-3,16,3);}
             else{g.setColor(new Color(0xb6aa7f));g.fillRect(x,y+14,16,2);}return;
         }
-        if(tile==WorldMap.WOOD){g.setColor(new Color(0x927852));g.fillRect(x,y,16,16);g.setColor(new Color(0x5e5442));for(int i=0;i<16;i+=4)g.drawLine(x,y+i,x+15,y+i);g.fillRect(x+2,y+1,1,1);return;}
-        if(tile==WorldMap.PATH)base=a.world.area.ordinal()<3?0x9a926e:0x77756d;
+        if(tile==WorldMap.WOOD){g.setColor(new Color(0xb98143));g.fillRect(x,y,16,16);g.setColor(new Color(0x5e5442));for(int i=0;i<16;i+=4)g.drawLine(x,y+i,x+15,y+i);g.fillRect(x+2,y+1,1,1);return;}
+        if(tile==WorldMap.PATH)base=a.world.area.ordinal()<3?0xd2ae69:0x77756d;
         if(tile==WorldMap.STONE||tile==WorldMap.CRACK){
-            base=a.world.area==Area.CASTLE?0x8c9484:a.world.area.ground;g.setColor(tone(base,h-8));g.fillRect(x,y,16,16);
+            base=a.world.area==Area.CASTLE?0xabb8b9:a.world.area.ground;g.setColor(tone(base,h-8));g.fillRect(x,y,16,16);
             g.setColor(tone(base,-14));g.drawLine(x,y+15,x+15,y+15);g.drawLine(x+15,y,x+15,y+15);
             g.setColor(tone(base,9));g.drawLine(x+1,y+1,x+14,y+1);
         }else{g.setColor(tone(base,h-6));g.fillRect(x,y,16,16);g.setColor(tone(base,13));g.fillRect(x+h,y+4,2,1);g.fillRect(x+3,y+h,1,2);}
@@ -83,16 +85,16 @@ public final class AdventureRenderer {
     }
     private void architecture(){
         if(a.world.area==Area.CASTLE||a.world.area==Area.KEEP){
-            for(int bx:new int[]{292,492}){int xx=sx(bx),yy=sy(185);g.setColor(new Color(0xb7a477));g.fillRect(xx,yy-56,2,58);
-                int wave=(int)(Math.sin(a.tick*.04+bx)*3);g.setColor(new Color(a.world.area==Area.CASTLE?0x9f4259:0x745273));
+            for(int bx:new int[]{292,492}){int xx=sx(bx),yy=sy(185);g.setColor(new Color(0xe6c27c));g.fillRect(xx,yy-56,2,58);
+                int wave=(int)(Math.sin(a.tick*.04+bx)*3);g.setColor(new Color(a.world.area==Area.CASTLE?0xde3e6b:0xa15fe1));
                 g.fillPolygon(new int[]{xx+2,xx+22,xx+20+wave,xx+2},new int[]{yy-54,yy-51+wave,yy-29,yy-34},4);
                 g.setColor(GOLD);g.fillRect(xx+9,yy-45,5,6);}
         }
         if(a.world.area==Area.CASTLE){
             building(168,176,"FORGE",a.progress.has("forge"),0x775147);
-            building(600,176,"GARDEN",a.progress.has("garden"),0x697d53);
+            building(600,176,"GARDEN",a.progress.has("garden"),0x56a853);
             building(200,360,"BELL TOWER",a.progress.has("tower"),0x727f82);
-            int tx=sx(392),ty=sy(112);g.setColor(new Color(0x76414d));g.fillRect(tx-18,ty-19,36,32);g.setColor(GOLD);g.drawRect(tx-18,ty-19,36,32);
+            int tx=sx(392),ty=sy(112);g.setColor(new Color(0xa83b68));g.fillRect(tx-18,ty-19,36,32);g.setColor(GOLD);g.drawRect(tx-18,ty-19,36,32);
             for(int i=0;i<3;i++)g.fillRect(tx-14+i*12,ty-26,5,9);
             if(a.progress.has("garden")){for(int i=0;i<18;i++){int xx=sx(555+i%6*16),yy=sy(220+i/6*13);g.setColor(new Color(0x69825c));g.fillRect(xx,yy,1,6);g.setColor(new Color(i%2==0?0xd49b8c:0xdfcb82));g.fillRect(xx-2,yy-2,5,3);}}
         }
@@ -208,7 +210,7 @@ public final class AdventureRenderer {
         shadow(x,y,18);if(a.hurtTime>0&&a.hurtTime%8<3&&a.hurtTime<60)return;
         int sway=(int)(Math.sin(a.tick*(a.moving?.24:.05))*(a.moving?3:1));
         if(a.world.area==Area.KEEP&&Adventure.distance(a.x,a.y,568,376)<80)sway+=3;
-        g.setColor(new Color(0x9f334b));g.fillPolygon(new int[]{x-6,x+5,x+(int)a.capeX+7+sway,x+(int)a.capeX-7+sway},new int[]{y-19-lift,y-19-lift,y+(int)a.capeY-lift,y+(int)a.capeY-lift},4);
+        g.setColor(new Color(0xe83263));g.fillPolygon(new int[]{x-6,x+5,x+(int)a.capeX+7+sway,x+(int)a.capeX-7+sway},new int[]{y-19-lift,y-19-lift,y+(int)a.capeY-lift,y+(int)a.capeY-lift},4);
         boolean side=Math.abs(a.faceX)>Math.abs(a.faceY);int anim=a.moving?(a.tick/8)%3:0;
         Sprite sprite=side?(anim==0?Sprite.player_side:anim==1?Sprite.player_side_1:Sprite.player_side_2):a.faceY<0?(anim==0?Sprite.player_up:anim==1?Sprite.player_up_1:Sprite.player_up_2):(anim==0?Sprite.player_down:anim==1?Sprite.player_down_1:Sprite.player_down_2);
         BufferedImage player=sprite(sprite);

@@ -119,19 +119,19 @@ public final class Game extends Canvas implements Runnable {
         audio.configure(muted,adventure.restoration(),adventure.world.area==Area.THRONE&&!adventure.progress.has("won"),adventure.progress.has("won"));
         String effect;while((effect=adventure.sounds.poll())!=null)audio.play(effect);
         if(playButton!=null&&playButtonShown!=menu){playButtonShown=menu;boolean visible=menu;
-            SwingUtilities.invokeLater(()->{playButton.setVisible(visible);frame.pack();requestFocusInWindow();});}
+            SwingUtilities.invokeLater(()->{playButton.setVisible(visible);frame.revalidate();requestFocusInWindow();});}
         if(playButton!=null){String label=confirmNew?"Start a new kingdom (previous save will be backed up)":"Begin / continue adventure";
             if(!label.equals(playButtonLabel)){playButtonLabel=label;SwingUtilities.invokeLater(()->playButton.setText(label));}}
 
     }
     public BufferedImage renderFrame(){return renderer.render(adventure,menu,paused,atlas,journal,muted,focused);}
     public void render(){if(!isDisplayable())return;BufferStrategy buffers=getBufferStrategy();if(buffers==null)return;BufferedImage image=renderFrame();
-        do{do{Graphics2D g=(Graphics2D)buffers.getDrawGraphics();try{g.setRenderingHint(RenderingHints.KEY_INTERPOLATION,RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR);g.drawImage(image,0,0,getWidth(),getHeight(),null);}finally{g.dispose();}}while(buffers.contentsRestored()&&running);
+        do{do{Graphics2D g=(Graphics2D)buffers.getDrawGraphics();try{PixelViewport.draw(g,image,getWidth(),getHeight());}finally{g.dispose();}}while(buffers.contentsRestored()&&running);
             buffers.show();Toolkit.getDefaultToolkit().sync();}while(buffers.contentsLost()&&running);
     }
     private JMenuItem item(String text,Runnable action){JMenuItem item=new JMenuItem(text);item.addActionListener(e->{commands.add(action);requestFocusInWindow();});return item;}
     private void openWindow(){
-        frame=new JFrame(TITLE);frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);frame.setResizable(false);frame.add(this,BorderLayout.CENTER);
+        frame=new JFrame(TITLE);frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);frame.setResizable(true);frame.setMinimumSize(new Dimension(WIDTH+40,HEIGHT+120));frame.add(this,BorderLayout.CENTER);
         playButton=new JButton("Begin / continue adventure");playButton.setFont(new Font(Font.SANS_SERIF,Font.BOLD,14));
         playButton.setBackground(new Color(0x203931));playButton.setForeground(new Color(0xead7a6));playButton.setOpaque(true);playButton.setBorderPainted(false);
         playButton.getAccessibleContext().setAccessibleDescription("Start or continue KingdomKing. Enter is the keyboard shortcut.");

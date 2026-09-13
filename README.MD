@@ -143,7 +143,7 @@ java -Djava.awt.headless=true -jar dist/KingdomKing.jar --screenshot build/boss.
 java -Djava.awt.headless=true -jar dist/KingdomKing.jar --sound-demo build/sound-demo.wav
 ```
 
-Screenshot scenes: `menu`, `castle`, `meadow`, `marsh`, `temple`, `keep`, `boss`, `restored`, `atlas`, and `journal`. Screenshots use the logical 480×270 resolution; the desktop app displays at 2× scale. `--classic --screenshot build/classic.png` renders the original 300×168 scene.
+Screenshot scenes: `menu`, `castle`, `meadow`, `marsh`, `temple`, `keep`, `boss`, `restored`, `atlas`, and `journal`. Screenshots use the logical 480×270 resolution; the desktop app opens at 2× logical scale. Resize or maximize the window normally: the image uses the largest whole-number scale that fits the display pixels (including Retina), with centered dark borders to preserve sharp, square pixels and the 16:9 composition. Pixel text is unsmoothed, and entering the campaign preserves your chosen window size. `--classic --screenshot build/classic.png` renders the original 300×168 scene.
 
 ## Package for macOS
 

@@ -169,7 +169,7 @@ public final class ClassicGame extends Canvas implements Runnable {
                 try {
                     graphics.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
                             RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR);
-                    graphics.drawImage(image, 0, 0, getWidth(), getHeight(), null);
+                    PixelViewport.draw(graphics, image, getWidth(), getHeight());
                     graphics.setColor(new Color(0, 0, 0, 170));
                     graphics.fillRect(12, 12, 116, 28);
                     graphics.setColor(Color.WHITE);
@@ -201,7 +201,8 @@ public final class ClassicGame extends Canvas implements Runnable {
     private void openWindow() {
         frame = new JFrame(TITLE);
         frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-        frame.setResizable(false);
+        frame.setResizable(true);
+        frame.setMinimumSize(new Dimension(WIDTH+40,HEIGHT+120));
         frame.add(this, BorderLayout.CENTER);
         JLabel controls = new JLabel("WASD / arrows: move    •    Shift / Ctrl: sprint    •    Esc: pause    •    R: respawn",
                 SwingConstants.CENTER);

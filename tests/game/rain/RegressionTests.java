@@ -23,6 +23,7 @@ public final class RegressionTests {
     private static final Canvas KEY_SOURCE = new Canvas();
 
     public static void main(String[] args) throws Exception {
+        test("sharp presentation at normal, Retina and fractional display scales", RegressionTests::pixelViewport);
         test("bundled artwork and map palette", RegressionTests::resources);
         test("rectangular map boundaries", RegressionTests::rectangularMaps);
         test("generated levels contain renderable tiles", RegressionTests::generatedLevels);
@@ -46,6 +47,29 @@ public final class RegressionTests {
 
     private static void check(boolean condition, String message) {
         if (!condition) throw new AssertionError(message);
+    }
+
+    private static void pixelViewport() {
+        BufferedImage source = new BufferedImage(2, 2, BufferedImage.TYPE_INT_RGB);
+        int[] colors = {0xff0000, 0x00ff00, 0x0000ff, 0xffffff};
+        source.setRGB(0, 0, 2, 2, colors, 0, 2);
+        for (double dpi : new double[]{1, 1.25, 1.5, 2}) {
+            int width = (int) Math.round(13 * dpi), height = (int) Math.round(9 * dpi);
+            BufferedImage output = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+            java.awt.Graphics2D graphics = output.createGraphics();
+            graphics.scale(dpi, dpi);
+            java.awt.geom.AffineTransform before = graphics.getTransform();
+            PixelViewport.draw(graphics, source, 13, 9);
+            check(graphics.getTransform().equals(before), "presentation changed caller transform");
+            graphics.dispose();
+            int scale = height / 2, left = (width - scale * 2) / 2, top = (height - scale * 2) / 2;
+            for (int y = 0; y < height; y++) for (int x = 0; x < width; x++) {
+                int expected = x < left || x >= left + scale * 2 || y < top || y >= top + scale * 2
+                        ? 0x091322 : colors[(y - top) / scale * 2 + (x - left) / scale];
+                check((output.getRGB(x, y) & 0xffffff) == expected,
+                        "blur, uneven pixels or stale border at display scale " + dpi + " pixel " + x + "," + y);
+            }
+        }
     }
 
     private static void resources() {

@@ -13,7 +13,7 @@ else
 fi
 # Only replaces the generated app in the repository's build directory.
 rm -rf build/app/KingdomKing.app
-"$packager" --type app-image --name KingdomKing --app-version 2.0.0 \
+"$packager" --type app-image --name KingdomKing --app-version 2.0.1 \
     --input dist --main-jar KingdomKing.jar --main-class game.rain.Game \
     --dest build/app --add-modules java.desktop \
     --mac-package-identifier com.samanimkr.kingdomking \
